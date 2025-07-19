@@ -73,8 +73,21 @@ class Window:
         if self.loaded:
             return
         self.loaded = True
-        [self.run_script(script) for script in self.scripts]
-        [self.run_script(script) for script in self.final_scripts]
+
+        # 优化：批量执行脚本，减少单独调用开销
+        try:
+            if self.scripts:
+                combined_script = '\n'.join(self.scripts)
+                self.script_func(combined_script)
+
+            if self.final_scripts:
+                combined_final_script = '\n'.join(self.final_scripts)
+                self.script_func(combined_final_script)
+        except Exception as e:
+            # 如果批量执行失败，回退到逐个执行
+            print(f"批量执行失败，回退到逐个执行: {e}")
+            [self.script_func(script) for script in self.scripts]
+            [self.script_func(script) for script in self.final_scripts]
 
     def run_script(self, script: str, run_last: bool = False):
         """

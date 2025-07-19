@@ -28,7 +28,8 @@ class PyWV:
         self.create_window(width, height, x, y, screen, on_top, maximize, title)
 
         start_ev.wait()
-        webview.start(debug=debug)
+        # 优化：减少webview启动延迟
+        webview.start(debug=debug, http_server=True)
         self.exit.set()
 
     def create_window(self, width, height, x, y, screen=None, on_top=False, maximize=False, title=''):
@@ -105,8 +106,12 @@ class Chart(abstract.AbstractChart):
         """
         if not self.win.loaded:
             self._start.set()
-            self._loaded.wait()
-            self.win.on_js_load()
+            # 优化：减少等待时间，使用超时机制
+            if self._loaded.wait(timeout=10):  # 最多等待10秒
+                self.win.on_js_load()
+            else:
+                print("警告：图表加载超时，但仍会尝试显示")
+                self.win.on_js_load()
         else:
             self._q.put((self._i, 'show'))
         if block:

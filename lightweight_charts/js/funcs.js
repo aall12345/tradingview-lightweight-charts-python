@@ -28,12 +28,13 @@ if (!window.Chart) {
                 width: window.innerWidth * innerWidth,
                 height: window.innerHeight * innerHeight,
                 layout: {
-                    textColor: pane.color,
+                    textColor: '#FFFFFF',
                     background: {
-                        color: '#000000',
+                        color: '#2B2B2B',
                         type: LightweightCharts.ColorType.Solid,
                     },
-                    fontSize: 12
+                    fontSize: 14,
+                    fontFamily: 'Arial'
                 },
                 rightPriceScale: {
                     scaleMargins: {top: 0.3, bottom: 0.25},
@@ -49,8 +50,14 @@ if (!window.Chart) {
                     }
                 },
                 grid: {
-                    vertLines: {color: 'rgba(29, 30, 38, 5)'},
-                    horzLines: {color: 'rgba(29, 30, 58, 5)'},
+                    vertLines: {
+                        color: 'rgba(29, 30, 38, 5)',
+                        visible: false
+                    },
+                    horzLines: {
+                        color: 'rgba(29, 30, 58, 5)',
+                        visible: false
+                    },
                 },
                 handleScroll: {vertTouchDrag: true},
             })
@@ -113,6 +120,8 @@ if (!window.Chart) {
                 color: '#26a69a',
                 priceFormat: {type: 'volume'},
                 priceScaleId: 'volume_scale',
+                lastValueVisible: false,
+                priceLineVisible: false,
             })
             this.series.priceScale().applyOptions({
                 scaleMargins: {top: 0.2, bottom: 0.2},
