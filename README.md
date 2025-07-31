@@ -14,7 +14,7 @@
 
 ### 运行主程序
 ```bash
-python3 lightweight_charts/show_view.py
+python3 lightweight_charts/display_interface.py
 ```
 
 ### 基本使用

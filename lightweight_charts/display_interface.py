@@ -416,9 +416,6 @@ if __name__ == '__main__':
 
     chart.events.search += on_search
 
-    # 添加快捷键：Ctrl+L 显示symbol列表
-    chart.hotkey('ctrl', 'l', on_show_symbols_hotkey)
-
     chart.topbar.textbox('symbol', 'btcusdt' )
     chart.topbar.switcher('timeframe', ( '1hour' ,'day','week','month'), default='day',
                           func=on_timeframe_selection)
