@@ -1,250 +1,165 @@
-<div align="center">
+# TradingView 轻量级图表 - 带搜索功能
 
-# lightweight-charts-python
+这是一个基于 TradingView Lightweight Charts 的 Python 图表库，专门为数据分析和交易图表显示而优化。
 
-[![PyPi Release](https://img.shields.io/pypi/v/lightweight-charts?color=32a852&label=PyPi)](https://pypi.org/project/lightweight-charts/)
-[![Made with Python](https://img.shields.io/badge/Python-3.8+-c7a002?logo=python&logoColor=white)](https://python.org "Go to Python homepage")
-[![License](https://img.shields.io/github/license/louisnw01/lightweight-charts-python?color=9c2400)](https://github.com/louisnw01/lightweight-charts-python/blob/main/LICENSE)
-[![Documentation](https://img.shields.io/badge/documentation-006ee3)](https://lightweight-charts-python.readthedocs.io/en/latest/index.html)
+## 🎯 主要功能
 
-![cover](https://raw.githubusercontent.com/louisnw01/lightweight-charts-python/main/cover.png)
+- **智能Symbol搜索**：支持从数据库中搜索5000+个交易品种
+- **实时数据显示**：连接MySQL数据库，实时显示K线数据
+- **多时间周期**：支持1小时、日线、周线、月线切换
+- **交互式图表**：支持缩放、拖拽、十字线等交互功能
+- **自定义样式**：空心K线、自定义颜色、图例显示
 
-lightweight-charts-python aims to provide a simple and pythonic way to access and implement [TradingView's Lightweight Charts](https://www.tradingview.com/lightweight-charts/).
-</div>
+## 🚀 快速开始
 
-
-## Installation
+### 运行主程序
+```bash
+python3 lightweight_charts/show_view.py
 ```
-pip install lightweight-charts
+
+### 基本使用
+```python
+from lightweight_charts import Chart
+
+# 创建图表
+chart = Chart()
+
+# 设置数据
+chart.set(your_dataframe)
+
+# 显示图表
+chart.show(block=True)
 ```
-___
 
-## Features
-1. Streamlined for live data, with methods for updating directly from tick data.
-2. Multi-pane charts using [Subcharts](https://lightweight-charts-python.readthedocs.io/en/latest/reference/abstract_chart.html#AbstractChart.create_subchart).
-3. The [Toolbox](https://lightweight-charts-python.readthedocs.io/en/latest/reference/toolbox.html), allowing for trendlines, rays and horizontal lines to be drawn directly onto charts.
-4. [Events](https://lightweight-charts-python.readthedocs.io/en/latest/tutorials/events.html) allowing for timeframe selectors (1min, 5min, 30min etc.), searching, hotkeys, and more.
-5. [Tables](https://lightweight-charts-python.readthedocs.io/en/latest/reference/tables.html) for watchlists, order entry, and trade management.
-6. Direct integration of market data through [Polygon.io's](https://polygon.io/?utm_source=affiliate&utm_campaign=pythonlwcharts) market data API.
+## 🔍 搜索功能
 
-__Supports:__ Jupyter Notebooks, PyQt5, PySide6, wxPython, Streamlit, and asyncio.
+### 使用方法
+1. **键盘搜索**：在图表界面按任意字母或数字键打开搜索框
+2. **输入Symbol**：输入要搜索的交易品种名称（支持模糊搜索）
+3. **确认搜索**：按回车键确认，按ESC键取消
 
-PartTimeLarry: [Interactive Brokers API and TradingView Charts in Python](https://www.youtube.com/watch?v=TlhDI3PforA)
-___
+### 搜索示例
+- 输入 `btc` → 自动匹配到 `btcusdt`
+- 输入 `eth` → 自动匹配到 `ethusdt`
+- 输入 `000001` → 精确匹配股票代码
+- 输入 `usdt` → 显示所有USDT交易对
 
-### 1. Display data from a csv:
+### 快捷键
+- **Ctrl+L**：显示可用Symbol列表
+- **任意字母/数字**：打开搜索框
 
+## 📊 支持的数据类型
+
+### 加密货币（641个）
+- BTC/USDT, ETH/USDT 等主流交易对
+- 各种山寨币交易对
+
+### 股票（5133个）
+- A股股票代码（如：000001, 600519）
+- 其他市场股票
+
+## 🛠️ 配置要求
+
+### 数据库配置
+```python
+# MySQL连接配置
+driver = 'pymysql'
+username = 'root'
+password = 'your_password'
+host = 'localhost'
+port = 3390
+dbname = 'analysis_system'
+```
+
+### 依赖包
+- `pandas` - 数据处理
+- `sqlalchemy` - 数据库ORM
+- `pymysql` - MySQL驱动
+
+## 📁 项目结构
+
+```
+lightweight_charts/
+├── __init__.py          # 模块初始化
+├── abstract.py          # 抽象基类
+├── chart.py            # 图表核心类
+├── show_view.py        # 主程序入口 ⭐
+├── topbar.py           # 顶部工具栏
+├── util.py             # 工具函数
+└── js/                 # JavaScript文件
+    ├── callback.js     # 回调处理
+    ├── funcs.js        # 核心函数
+    └── pkg.js          # 图表包
+```
+
+## 🎮 功能特点
+
+### 智能搜索
+- **精确匹配**：完整Symbol名称优先
+- **模糊搜索**：部分字符匹配
+- **自动选择**：智能选择最佳匹配
+- **大小写不敏感**：支持任意大小写
+
+### 数据处理
+- **时间重采样**：自动转换不同时间周期
+- **数据优化**：自动处理数据格式
+- **错误处理**：完善的异常处理机制
+
+### 用户体验
+- **实时反馈**：搜索状态即时显示
+- **智能提示**：显示匹配结果和建议
+- **快捷操作**：键盘快捷键支持
+
+## 📈 使用示例
+
+### 基本图表显示
 ```python
 import pandas as pd
 from lightweight_charts import Chart
 
+# 创建图表
+chart = Chart()
 
-if __name__ == '__main__':
-    
-    chart = Chart()
-    
-    # Columns: time | open | high | low | close | volume 
-    df = pd.read_csv('ohlcv.csv')
-    chart.set(df)
-    
-    chart.show(block=True)
+# 加载数据
+df = pd.read_csv('your_data.csv')
+chart.set(df)
 
+# 显示图表
+chart.show(block=True)
 ```
-![setting_data image](https://raw.githubusercontent.com/louisnw01/lightweight-charts-python/main/examples/1_setting_data/setting_data.png)
-___
 
-### 2. Updating bars in real-time:
-
+### 带搜索功能的图表
 ```python
-import pandas as pd
-from time import sleep
-from lightweight_charts import Chart
-
-if __name__ == '__main__':
-
-    chart = Chart()
-
-    df1 = pd.read_csv('ohlcv.csv')
-    df2 = pd.read_csv('next_ohlcv.csv')
-
-    chart.set(df1)
-
-    chart.show()
-
-    last_close = df1.iloc[-1]['close']
-    
-    for i, series in df2.iterrows():
-        chart.update(series)
-
-        if series['close'] > 20 and last_close < 20:
-            chart.marker(text='The price crossed $20!')
-            
-        last_close = series['close']
-        sleep(0.1)
-
+# 直接运行主程序
+python3 lightweight_charts/show_view.py
 ```
 
-![live data gif](https://github.com/louisnw01/lightweight-charts-python/blob/main/examples/2_live_data/live_data.gif?raw=true)
-___
+## 🔧 自定义配置
 
-### 3. Updating bars from tick data in real-time:
+### 图表样式
+- 空心K线设计
+- 自定义颜色方案
+- 图例和价格显示
+- 时间格式化
 
-```python
-import pandas as pd
-from time import sleep
-from lightweight_charts import Chart
+### 数据库连接
+- 支持MySQL数据库
+- 可配置连接参数
+- 自动重连机制
 
+## 📝 更新日志
 
-if __name__ == '__main__':
-    
-    df1 = pd.read_csv('ohlc.csv')
-    
-    # Columns: time | price 
-    df2 = pd.read_csv('ticks.csv')
-    
-    chart = Chart()
-    
-    chart.set(df1)
-    
-    chart.show()
-    
-    for i, tick in df2.iterrows():
-        chart.update_from_tick(tick)
-            
-        sleep(0.03)
+### 最新版本
+- ✅ 添加智能Symbol搜索功能
+- ✅ 支持5000+交易品种
+- ✅ 优化用户交互体验
+- ✅ 移除不必要的依赖
+- ✅ 简化项目结构
 
-```
-![tick data gif](https://raw.githubusercontent.com/louisnw01/lightweight-charts-python/main/examples/3_tick_data/tick_data.gif)
-___
+## 🤝 贡献
 
-### 4. Line Indicators:
+欢迎提交Issue和Pull Request来改进这个项目！
 
-```python
-import pandas as pd
-from lightweight_charts import Chart
+## 📄 许可证
 
-
-def calculate_sma(df, period: int = 50):
-    return pd.DataFrame({
-        'time': df['date'],
-        f'SMA {period}': df['close'].rolling(window=period).mean()
-    }).dropna()
-
-
-if __name__ == '__main__':
-    chart = Chart()
-    chart.legend(visible=True)
-
-    df = pd.read_csv('ohlcv.csv')
-    chart.set(df)
-
-    line = chart.create_line('SMA 50')
-    sma_data = calculate_sma(df, period=50)
-    line.set(sma_data)
-
-    chart.show(block=True)
-
-```
-![line indicators image](https://raw.githubusercontent.com/louisnw01/lightweight-charts-python/main/examples/4_line_indicators/line_indicators.png)
-___
-
-### 5. Styling:
-
-```python
-import pandas as pd
-from lightweight_charts import Chart
-
-
-if __name__ == '__main__':
-    
-    chart = Chart()
-
-    df = pd.read_csv('ohlcv.csv')
-
-    chart.layout(background_color='#090008', text_color='#FFFFFF', font_size=16,
-                 font_family='Helvetica')
-
-    chart.candle_style(up_color='#00ff55', down_color='#ed4807',
-                       border_up_color='#FFFFFF', border_down_color='#FFFFFF',
-                       wick_up_color='#FFFFFF', wick_down_color='#FFFFFF')
-
-    chart.volume_config(up_color='#00ff55', down_color='#ed4807')
-
-    chart.watermark('1D', color='rgba(180, 180, 240, 0.7)')
-
-    chart.crosshair(mode='normal', vert_color='#FFFFFF', vert_style='dotted',
-                    horz_color='#FFFFFF', horz_style='dotted')
-
-    chart.legend(visible=True, font_size=14)
-
-    chart.set(df)
-
-    chart.show(block=True)
-
-```
-![styling image](https://raw.githubusercontent.com/louisnw01/lightweight-charts-python/main/examples/5_styling/styling.png)
-___
-
-### 6. Callbacks:
-
-```python
-import pandas as pd
-from lightweight_charts import Chart
-
-
-def get_bar_data(symbol, timeframe):
-    if symbol not in ('AAPL', 'GOOGL', 'TSLA'):
-        print(f'No data for "{symbol}"')
-        return pd.DataFrame()
-    return pd.read_csv(f'bar_data/{symbol}_{timeframe}.csv')
-
-
-def on_search(chart, searched_string):  # Called when the user searches.
-    new_data = get_bar_data(searched_string, chart.topbar['timeframe'].value)
-    if new_data.empty:
-        return
-    chart.topbar['symbol'].set(searched_string)
-    chart.set(new_data)
-
-
-def on_timeframe_selection(chart):  # Called when the user changes the timeframe.
-    new_data = get_bar_data(chart.topbar['symbol'].value, chart.topbar['timeframe'].value)
-    if new_data.empty:
-        return
-    chart.set(new_data, True)
-
-
-def on_horizontal_line_move(chart, line):
-    print(f'Horizontal line moved to: {line.price}')
-
-
-if __name__ == '__main__':
-    chart = Chart(toolbox=True)
-    chart.legend(True)
-
-    chart.events.search += on_search
-
-    chart.topbar.textbox('symbol', 'TSLA')
-    chart.topbar.switcher('timeframe', ('1min', '5min', '30min'), default='5min',
-                          func=on_timeframe_selection)
-
-    df = get_bar_data('TSLA', '5min')
-    chart.set(df)
-
-    chart.horizontal_line(200, func=on_horizontal_line_move)
-
-    chart.show(block=True)
-
-```
-![callbacks gif](https://raw.githubusercontent.com/louisnw01/lightweight-charts-python/main/examples/6_callbacks/callbacks.gif)
-___
-
-<div align="center">
-
-[![Documentation](https://img.shields.io/badge/documentation-006ee3)](https://lightweight-charts-python.readthedocs.io/en/latest/index.html)
-
-Inquiries: [shaders_worker_0e@icloud.com](mailto:shaders_worker_0e@icloud.com)
-___
-
-_This package is an independent creation and has not been endorsed, sponsored, or approved by TradingView. The author of this package does not have any official relationship with TradingView, and the package does not represent the views or opinions of TradingView._
-</div>
+本项目基于 MIT 许可证开源。

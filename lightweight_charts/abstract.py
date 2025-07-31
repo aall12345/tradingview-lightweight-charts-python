@@ -5,8 +5,6 @@ from datetime import datetime
 from typing import Union, Literal, List, Optional
 import pandas as pd
 
-from .table import Table
-from .toolbox import ToolBox
 from .topbar import TopBar
 from .util import (
     IDGen, jbool, Pane, Events, TIME, NUM, FLOAT,
@@ -16,7 +14,7 @@ from .util import (
 
 JS = {}
 current_dir = os.path.dirname(os.path.abspath(__file__))
-for file in ('pkg', 'funcs', 'callback', 'toolbox', 'table'):
+for file in ('pkg', 'funcs', 'callback'):
     with open(os.path.join(current_dir, 'js', f'{file}.js'), 'r', encoding='utf-8') as f:
         JS[file] = f.read()
 
@@ -46,7 +44,6 @@ TEMPLATE = f"""
     <div id="wrapper"></div>
     <script>
     {JS['funcs']}
-    {JS['table']}
     </script>
 </body>
 </html>
@@ -98,17 +95,7 @@ class Window:
             return
         self.scripts.append(script) if not run_last else self.final_scripts.append(script)
 
-    def create_table(
-            self, width: NUM, height: NUM, headings: tuple, widths: tuple = None,
-            alignments: tuple = None, position: FLOAT = 'left', draggable: bool = False,
-            background_color: str = '#121417', border_color: str = 'rgb(70, 70, 70)',
-            border_width: int = 1, heading_text_colors: tuple = None,
-            heading_background_colors: tuple = None, return_clicked_cells: bool = False,
-            func: callable = None
-    ) -> 'Table':
-        return Table(self, width, height, headings, widths, alignments, position, draggable,
-                     background_color, border_color, border_width, heading_text_colors,
-                     heading_background_colors, return_clicked_cells, func)
+
 
     def create_subchart(self, position: FLOAT = 'left', width: float = 0.5, height: float = 0.5,
                         sync_id: str = None, scale_candles_only: bool = False,
@@ -770,8 +757,7 @@ class AbstractChart(Candlestick, Pane):
         self._height = height
         self.events: Events = Events(self)
 
-        from lightweight_charts.polygon import PolygonAPI
-        self.polygon: PolygonAPI = PolygonAPI(self)
+
 
         self.run_script(
             f'{self.id} = new Chart("{self.id}", {width}, {height}, "{position}", {jbool(autosize)})')
@@ -779,8 +765,7 @@ class AbstractChart(Candlestick, Pane):
         Candlestick.__init__(self, self)
 
         self.topbar: TopBar = TopBar(self)
-        if toolbox:
-            self.toolbox: ToolBox = ToolBox(self)
+
 
     def fit(self):
         """
@@ -1012,17 +997,7 @@ class AbstractChart(Candlestick, Pane):
                     }})''')
         self.win.handlers[f'{modifier_key, keys}'] = func
 
-    def create_table(
-            self, width: NUM, height: NUM, headings: tuple, widths: tuple = None,
-            alignments: tuple = None, position: FLOAT = 'left', draggable: bool = False,
-            background_color: str = '#121417', border_color: str = 'rgb(70, 70, 70)',
-            border_width: int = 1, heading_text_colors: tuple = None,
-            heading_background_colors: tuple = None, return_clicked_cells: bool = False,
-            func: callable = None
-    ) -> Table:
-        return self.win.create_table(width, height, headings, widths, alignments, position, draggable,
-                                     background_color, border_color, border_width, heading_text_colors,
-                                     heading_background_colors, return_clicked_cells, func)
+
 
     def screenshot(self) -> bytes:
         """

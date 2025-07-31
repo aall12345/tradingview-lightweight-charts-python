@@ -123,8 +123,7 @@ class Chart(abstract.AbstractChart):
             asyncio.create_task(self.show_async(block=True))
             return
         try:
-            from lightweight_charts import polygon
-            [asyncio.create_task(self.polygon.async_set(*args)) for args in polygon._set_on_load]
+
             while 1:
                 while self._emit_q.empty() and not self._exit.is_set():
                     await asyncio.sleep(0.05)
